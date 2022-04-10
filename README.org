@@ -1,0 +1,17 @@
+* PitayaForm
+
+*PitayaForm* defines a data representation that provides a framework
+for collecting data from a user interface and converting it to the
+desired data model.
+
+The current specification is based on JSON [[[https://datatracker.ietf.org/doc/html/rfc8259][RFC 8259]]] or other
+interchangeable formats like [[https://yaml.org/][YAML]], although any data serialization
+format with [[https://datatracker.ietf.org/doc/html/rfc8259#section-3][JSON basic data types]] could be used in the same way.
+
+The following drafts are available:
+
+- [[./FORM.org][Pitaya Form]]
+- [[./TYPES.org][Data Types]]
+- [[./STYLES.org][Styles]]
+- [[./VALIDATORS.org][Validators]]
+- [[./REFERENCES.org][Templates and References]]
