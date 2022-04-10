@@ -1,0 +1,30 @@
+* Pitaya RPC Types
+
+Implementing the following =rpc= types for the remote procedure calls
+are recommended.
+
+** =http_rest=
+
+RPC using HTTP/HTTPS protocol. If there is a specific RPC URL for the
+forntend, the =name= can be an identifier for the RPC method,
+otherwise a full-url can be used as the =name=.
+
+The following =options= may be used:
+
+*** =method=
+
+The HTTP method. =GET=, =POST=, etc.
+
+*** =content_type=
+
+Force a specific method for passing arguments,
+e.g. =multipart/form-data=, =application/x-www-form-urlencoded= or
+=application/json=.
+
+** =js=
+
+If the frontend is implemented in JavaScript it is quite easy to
+implement =js= calls.
+
+Given a dedicated =js= section in the PitayaForm containing JavaScript
+functions, each function can be used just like an =RPC=.

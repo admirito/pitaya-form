@@ -15,3 +15,4 @@ The following drafts are available:
 - [[./STYLES.org][Styles]]
 - [[./VALIDATORS.org][Validators]]
 - [[./REFERENCES.org][Templates and References]]
+- [[./RPC.org][RPC Types]]
