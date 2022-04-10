@@ -1,0 +1,51 @@
+* Pitaya Validators
+
+An general option for all the data types is =validators=. It is an
+array of objects.Each object in the array represent a validation
+function performed in the backend/frontend. A =hint= key in each
+object will be present that could be used as the error message if the
+user provided the invalid data.
+
+|--------------------------------+--------------------------------------------|
+| Validator Object               | Description                                |
+|--------------------------------+--------------------------------------------|
+| {"allow_empty": /Boolean/,     | Using =False= as the value of either of    |
+| "allow_whitespace": /Boolean/} | these fields, may be used to restrict      |
+|                                | empty/white-space-only strings.            |
+|                                |                                            |
+|                                | See =General Validator Keys= section for   |
+|                                | more information.                          |
+|--------------------------------+--------------------------------------------|
+| {"min": /Number/,              | Defines a valid range for the input        |
+| "max": /Number/}               | number.                                    |
+|                                |                                            |
+|                                | It is possible that only one of the =min=  |
+|                                | and =max= be present.                      |
+|--------------------------------+--------------------------------------------|
+| {"hostname": True}             | A valid hostname, DNS name or IPv4/IPv6    |
+|                                | address has to be provided for this field. |
+|--------------------------------+--------------------------------------------|
+| {"url": True,                  | A valid URL is required.                   |
+| "url_schemes":                 |                                            |
+| [ /a list of strings/ ]        | A list of valid schemes may be provided.   |
+| }                              | In this case, only URLs with the specified |
+|                                | schemes are allowed.                       |
+|--------------------------------+--------------------------------------------|
+| {"regex": /String/}            | The input string has to match the provided |
+|                                | regular expression pattern.                |
+|--------------------------------+--------------------------------------------|
+
+** General Validator Keys
+
+The following keys could be present in all the validators.
+
+|------------------+--------------------------------------------------------|
+| Key              | Description                                            |
+|------------------+--------------------------------------------------------|
+| allow_empty      | An empty string =""= is valid for this field           |
+|------------------+--------------------------------------------------------|
+| allow_whitespace | A string containing only white-space is valid for this |
+|                  | field.                                                 |
+|------------------+--------------------------------------------------------|
+| allow_null       | Value of =null= is valid for this field.               |
+|------------------+--------------------------------------------------------|

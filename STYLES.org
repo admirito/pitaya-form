@@ -1,0 +1,11 @@
+* Pitaya Form Styles
+
+|-----------+----------------+---------------------------------------------|
+| Name      | Type (default) | Description                                 |
+|-----------+----------------+---------------------------------------------|
+| hidden    | Boolean        | Determine if the widget must be visible     |
+|           | (=false=)      | or not.                                     |
+|-----------+----------------+---------------------------------------------|
+| multiline | Boolean        | Determine if the widget can be expanded to. |
+|           | (=false=)      | multiple lines or not.                      |
+|-----------+----------------+---------------------------------------------|

@@ -1,0 +1,22 @@
+* Pitaya Form Templates and References
+
+** Document References
+
+In =document_reference= mode, implementing the following types is
+recommended.
+
+*** =jsonpath=
+
+[[https://goessner.net/articles/JsonPath/][JSONPath]] for referencing elements in the document. A good python
+implementation is [[https://github.com/kennknowles/python-jsonpath-rw][jsonpath-rw]]. Various implementations in various
+programming languages is available.
+
+** Templates
+
+In =value= mode, implementing the following types beyond =simple= is
+recommended:
+
+*** =jsonpath_braces=
+
+Using braces ={}= to define templates in the text. A [[https://goessner.net/articles/JsonPath/][JSONPath]] must be
+between braces which can refer to an element in the document.
