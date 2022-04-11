@@ -142,16 +142,23 @@
 |             | Default: random generated        |                           |
 |             |                                  |                           |
 |             | Options:                         |                           |
-|             | . =charset= (enumeration):       |                           |
-|             | .   A name which determine which |                           |
-|             | .   character set must be used   |                           |
-|             | .   in the generated value.      |                           |
-|             | .   Defaults to =alpha_numeric=. |                           |
-|             | .   Other options are            |                           |
-|             | .   =ascii_letters=,             |                           |
-|             | .   =ascii_lowercase=,           |                           |
-|             | .   =ascii_uppercase=, =digits=, |                           |
-|             | .   =hexdigits=, =printable=.    |                           |
+|             | . =charset= (array of strings):  |                           |
+|             | .  Each item in the =charset=    |                           |
+|             | .  array determines which        |                           |
+|             | .  character sets should be used |                           |
+|             | .  in the token. Valid items     |                           |
+|             | .  are:                          |                           |
+|             | .    =ascii_letters=             |                           |
+|             | .    =ascii_lowercase=           |                           |
+|             | .    =ascii_uppercase=           |                           |
+|             | .    =digits=                    |                           |
+|             | .    =hexdigits=                 |                           |
+|             | .    =octdigits=                 |                           |
+|             | .    =printable=                 |                           |
+|             | .    =punctuation=               |                           |
+|             | .    =whitespace=                |                           |
+|             | .  The default value is          |                           |
+|             | .  =ascii_letters= and =digits=. |                           |
 |             | . =length= (Number):             |                           |
 |             | .   The length of the value.     |                           |
 |-------------+----------------------------------+---------------------------|
