@@ -80,6 +80,13 @@
 |          |                                  |                            |
 |          | Default: =null=                  |                            |
 |----------+----------------------------------+----------------------------|
+| Label    | The =name= associated with       | null                       |
+|          | a =Label= type field is          |                            |
+|          | displayed to the user as a       |                            |
+|          | label. This is for informative   |                            |
+|          | purposes only and its value is   |                            |
+|          | always null.                     |                            |
+|----------+----------------------------------+----------------------------|
 | Password | A json object with two keys:     | {"state": "plain",         |
 |          | "state" and "content". If state  | "content": "secure-key"}   |
 |          | is "plain", content has to be    |                            |
