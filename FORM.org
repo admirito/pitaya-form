@@ -302,6 +302,16 @@ simple implementation:
         regex: ".*/v1/.*"
 #+end_src
 
+** =events=
+
+OPTIONAL. An OBJECT. The keys are the name of the event and the value
+for each event is an ARRAY of references to actions defined in the
+=actions= section that a frontend MAY execute them in the mentioned
+order if it support the event.
+
+FRONTEND OPTIONAL. A frontend may support any events but they are not
+specified in this document.
+
 * =styles=
 
 An OPTIONAL =styles= may be provided for each PitayaForm in which keys
@@ -358,7 +368,7 @@ The =groups= key defines an OBJECT in which each key is a reference to
 a =gid= or a non-existent logical group. Non-existent logical group
 keys MUST also abide the =gid= naming conventions.
 
-The =groups= can be used the change the place where the data will be
+The =groups= can be used to change the place where the data will be
 stored in the target data model. In the above example the target data
 model could be as follows:
 
@@ -495,7 +505,7 @@ Here is an example:
         Any valid HTTP header can be provided. Note that the
         keys has to be Latin-1 encoded.
       array: true
-      result_group: headers
+      target_group: headers
       order: 1  # (C) in NOTE*
   styles:  # styles can be adde to both field and group references
     value:
@@ -538,16 +548,6 @@ be used to add default items for the array:
         - key: foo2
           value: bar2
 #+end_src
-
-** =events=
-
-OPTIONAL. An OBJECT. The keys are the name of the event and the value
-for each event is an ARRAY of references to actions defined in the
-=actions= section that a frontend MAY execute them in the mentioned
-order if it support the event.
-
-FRONTEND OPTIONAL. A frontend may support any events but they are not
-specified in this document.
 
 ** =gid=
 
@@ -633,7 +633,7 @@ group MAY have events if the frontend support them.
       description: |
         You can provide a template for the short messages with
         your desired style.
-      result_group: null
+      target_group: null
       order: 1
     ssl_options: {} # A group with no options will cause the
                     # form values of this group to be stored
@@ -643,15 +643,15 @@ group MAY have events if the frontend support them.
                     # option:
                     #
                     # ssl_options:
-                    #   result_group: ssl_options
+                    #   target_group: ssl_options
                     #
                     # This is different than gid "url" which is not
                     # defined here and is equivalent to:
                     #
                     # url:
-                    #   result_group: null
+                    #   target_group: null
     api_key:
-      result_group: api
+      target_group: api
       order: 4
     default_options:
       name: Default Options
@@ -722,7 +722,7 @@ group MAY have events if the frontend support them.
       gid: request
     proxy_auth:
       name: Proxy Authentication
-      result_group: auth
+      target_group: auth
       array: true
       gid: proxy
 #+end_src
@@ -843,7 +843,7 @@ PitayaForm:
            groups:
              advanced:
                name: Advanced Options
-               result_group: null
+               target_group: null
                order: 2
 #+end_src
 
@@ -1052,7 +1052,7 @@ that ARRAY and extracting the actions MUST be ignored silently.
            groups:
              advanced:
                name: Advanced Options
-               result_group: null
+               target_group: null
                order: 2
        # The actions above will be peformed in the specified order. This
        # was only to illustrate an example. In practice, first "remove"
@@ -1270,8 +1270,8 @@ user. As user change the inputs the values in the =input= MUST be
 updated. The =input= is useful to be referenced from other sections of
 the form.
 
-On the form initialization, the FRONEND MUST create an input object by
-using the default values in the =form= and =groups=. Then if there
+On the form initialization, the frontend MUST create an input object
+by using the default values in the =form= and =groups=. Then if there
 exists an =input= section in a PitayaForm it MUST be merged into the
 created input object overriding the default values. The merge MUST be
 done just like the =update= action with =extend_arrays= set to
