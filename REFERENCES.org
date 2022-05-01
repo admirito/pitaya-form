@@ -3,7 +3,7 @@
 ** Document References
 
 In =document_reference= mode, implementing the following types is
-recommended.
+RECOMMENDED.
 
 *** =jsonpath=
 
@@ -11,12 +11,25 @@ recommended.
 implementation is [[https://github.com/kennknowles/python-jsonpath-rw][jsonpath-rw]]. Various implementations in various
 programming languages is available.
 
+** Current References
+
+In =current_reference= mode, implementing the same types as document
+reference mode is RECOMMENDED. Although, contrary to the document
+reference mode the frontend must generate a reference instead of
+parsing one.
+
 ** Templates
 
 In =value= mode, implementing the following types beyond =simple= is
-recommended:
+RECOMMENDED:
 
 *** =jsonpath_braces=
 
 Using braces ={}= to define templates in the text. A [[https://goessner.net/articles/JsonPath/][JSONPath]] must be
 between braces which can refer to an element in the document.
+
+*** Language agnostic formats
+
+There are lots of good templating implementations such as [[https://jinja.palletsprojects.com/en/3.1.x/][Jinja]],
+[[http://mozilla.github.io/nunjucks/][Nunjucks]], [[https://handlebarsjs.com/][Handlebars]] and [[https://www.npmjs.com/package/es6-dynamic-template][ES6 Dynamic Templates]] but using language
+agnostic implementations such as [[https://mustache.github.io/][mustache]] are preferable.
