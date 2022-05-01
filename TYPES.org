@@ -2,167 +2,434 @@
 
 ** Basic Data Types
 
-|---------+----------------------------------+--------------------|
-| Name    | Description                      | Example Values     |
-|---------+----------------------------------+--------------------|
-| Boolean | true/false                       | true               |
-|         |                                  |                    |
-|         | Default: =false=                 | false              |
-|---------+----------------------------------+--------------------|
-| Number  | An integer or floating point     | 10                 |
-|         |                                  |                    |
-|         | Default: =0=                     |                    |
-|         |                                  |                    |
-|         | Options:                         |                    |
-|         | . =float= (Boolean):             |                    |
-|         | .   Determines whether it is a   |                    |
-|         | .   floating-point number or not |                    |
-|         | .   (default: =false=)           |                    |
-|         | . =signed= (Boolean):            |                    |
-|         | .   Determines whether it is a   |                    |
-|         | .   signed number or not         |                    |
-|         | .   (default: =false=)           |                    |
-|---------+----------------------------------+--------------------|
-| String  | Basic unicode string             | "this is a string" |
-|         |                                  |                    |
-|         | Default: =""=                    |                    |
-|---------+----------------------------------+--------------------|
+|---------+----------------------+---------+----------------|
+| Name    | Description          | Default | Example Values |
+|---------+----------------------+---------+----------------|
+| Boolean | true/false           | false   | true           |
+| Number  | integer or float     | 0       | 10             |
+| String  | basic unicode string | ""      | "string"       |
+|---------+----------------------+---------+----------------|
+
+*** Boolean
+
+=true= or =false=.
+
+**** Default
+
+=false=
+
+*** Number
+
+An integer of floating point number.
+
+**** Default
+
+=0=
+
+**** Examples
+
+- =-5=
+- =10=
+- =142.31=
+
+**** Options
+
+***** =float= (Boolean)
+
+Determines whether it is a floating-point number or not.
+
+****** Default
+
+=false=
+
+***** =signed= (Boolean)
+
+Determines whether it is a signed number or not.
+
+****** Default
+
+=false=
+
+*** String
+
+
+Basic unicode string.
+
+**** Default
+
+=""=
+
+**** Examples
+
+- ="this is an string"=
+- ="\u06cc\u06a9 \u0631\u0634\u062a\u0647."=
 
 ** Conventional Data Types
 
-|----------+----------------------------------+----------------------------|
-| Name     | Description                      | Example Values             |
-|----------+----------------------------------+----------------------------|
-| Choices  | The =options= may be defined to  | "py"                       |
-|          | provide the choices. The user    | ("py" is the key of        |
-|          | may choose one or more items.    | one of the items provided  |
-|          |                                  | by the =choices=           |
-|          | The keys of the choices could be | in =options=)              |
-|          | used as the value for this type. |                            |
-|          |                                  | ["py", "js"]               |
-|          | Default: =null=                  | (The value will be a json  |
-|          |                                  | array if the =multiple=    |
-|          | Options:                         | option is =true=.          |
-|          | . =choices= (Boolean):           | "py" and "js" are the      |
-|          | .   An array of objects, the     | keys of the items provided |
-|          | .   item user must choose from.  | by the =choices= option.)  |
-|          | .   One key (or more) may be     |                            |
-|          | .   chosen by the user and set   |                            |
-|          | .   as the input value for the   |                            |
-|          | .   field of this type.          |                            |
-|          | .   The corespondent value for   |                            |
-|          | .   each key must be an Item     |                            |
-|          | .   with a =name= and optionally |                            |
-|          | .   a =description= the human-   |                            |
-|          | .   readable form of each item.  |                            |
-|          | .   e.g.                         |                            |
-|          | .   {"py":                       |                            |
-|          | .      {"name": "Python",        |                            |
-|          | .       "description": "v 2.7"}, |                            |
-|          | .    "js":                       |                            |
-|          | .      {"name": "JavaScript"}    |                            |
-|          | .   }                            |                            |
-|          | . =multiple= (Boolean):          |                            |
-|          | .   Determines whether multiple  |                            |
-|          | .   items can be selected or     |                            |
-|          | .   not. Defaults to =false=.    |                            |
-|----------+----------------------------------+----------------------------|
-| DateTime | A Unix timestamp                 | 1647249721                 |
-|----------+----------------------------------+----------------------------|
-| File     | A json object with four keys,    | {"filename": "foo.txt",    |
-|          | "filename", "content" and        | "mime-type": "plain/text", |
-|          | optionally "mime-type" and       | "content": "Zm9vCg=="      |
-|          | "content-id". The related values | "content-id": "foo-cid"}   |
-|          | are the file name, base64        |                            |
-|          | encoded content, mime type (RFC  | {"filename": "bar.json"    |
-|          | 2045) and a Content-ID to allow  | "content": "eyJiIjogMX0K"} |
-|          | referencing (RFC 2045)           |                            |
-|          |                                  |                            |
-|          | Default: =null=                  |                            |
-|----------+----------------------------------+----------------------------|
-| Label    | The =name= associated with       | null                       |
-|          | a =Label= type field is          |                            |
-|          | displayed to the user as a       |                            |
-|          | label. This is for informative   |                            |
-|          | purposes only and its value is   |                            |
-|          | always null.                     |                            |
-|----------+----------------------------------+----------------------------|
-| Password | A json object with two keys:     | {"state": "plain",         |
-|          | "state" and "content". If state  | "content": "secure-key"}   |
-|          | is "plain", content has to be    |                            |
-|          | the password in plain text.      | {"state": "encrypted",     |
-|          | The backend may automatically    | "content": "Y2lwaGVyCg=="} |
-|          | convert the state to "encrypted" |                            |
-|          | and encrypt the content in       |                            |
-|          | future password retrievals.      |                            |
-|          |                                  |                            |
-|          | Default: =null=                  |                            |
-|----------+----------------------------------+----------------------------|
+|----------+-----------------------+---------+-------------------------|
+| Name     | Description           | Default | Example Values          |
+|----------+-----------------------+---------+-------------------------|
+| Choices  | selectable options    | {}      | "py"                    |
+| DateTime | unix timestamp        | 0       | 1647249721              |
+| File     | file object           | null    | {"filename": "foo, ...} |
+| Label    | label - null value    | null    | null                    |
+| Password | secure token/password | null    | {"state": "plain", ...} |
+|----------+-----------------------+---------+-------------------------|
+
+*** Choices
+
+The =options= may be defined to provide the choices. The user may
+choose one or more items.
+
+The keys of the choices could be used as the value for this type.
+
+**** Default
+
+=null=
+
+**** Examples
+
+#+begin_src js
+  {"choices": {"py": {"name": "Python"},
+               "js": {"name": "JavaScript"}}}
+#+end_src
+
+- ="py"= :: ="py"= is the key of one of the items provided by the
+  =choices= in =options=
+
+- =["py", "js"]= :: The value will be a json array if the =multiple=
+  option is =true=.  "py" and "js" are the keys of the items provided
+  by the =choices= option.
+
+**** Options
+
+***** =choices= (Object)
+
+An object representing the items user must choose from.  One key (or
+more) may be chosen by the user and set as the input value for the
+field of this type.  The corespondent value for each key must be an
+Item with a =name= the human-readable name of the item and other
+optional details. E.g.
+
+#+begin_src js
+  {"py":
+     {"name": "Python",
+      "description": "Version 2.7"},
+   "js":
+     {"name": "JavaScript"}
+  }
+#+end_src
+
+Possible keys for each item are:
+
+- =name= :: the human-readable name of the item
+- =description= :: more details about the item
+- =icon= :: name of the icon for the item
+- =choices= :: can be used recursively to define nested trees of
+  options
+
+Here is a tree example with nested =choices=:
+
+#+begin_src js
+  {"ip":
+    {"name": "Internet Protocol",
+     "description": "version 4",
+     "choices":
+       {"tcp":
+          {"name": "Transmission Control",
+            "choices":
+              {"http":
+                 {"name": "Hypertext Transfer"},
+               "dns":
+                 {"name": "Domain Name System"}}},
+        "udp":
+          {"name": "User Datagram"}}},
+   "icmp":
+     {"name": "Internet Control Message Protocol"}}
+#+end_src
+
+****** Default
+
+={}=
+
+***** =multiple= (Boolean)
+
+Determines whether multiple items can be selected or not.
+
+****** Default
+
+=false=
+
+***** =selectable_parents= (Boolean)
+
+In a tree form with recursive "choices" options, determines whether
+parent items are selectable or not. By default only tree leaf nodes
+are selectable.
+
+****** Default
+
+=false=
+
+***** =arbitrary_entry_prefix= (String)
+
+If there is a string (including empty string =""=, but not =null=
+literal) available for =arbitrary_entry_prefix=, the user interface
+must allow arbitrary item/items to be entered (typed) by the user. The
+value provided as =arbitrary_entry_prefix= will be added as the prefix
+to the entered item/items.
+
+For example if =arbitrary_entry_prefix= value is ="_"= and =multiple=
+is also =true= and the user chooses the item ="py"= and ="js"= from
+the =choices=, but also enter ="Clojure"= and ="Hy"=, the final value
+will be: =["py", "js", "_Clojure", "_Hy"]=.
+
+If =arbitrary_entry_prefix= set to =null= literal (the default),
+arbitrary values are not allowed and the user my only select from the
+options in available in =choices=.
+
+****** Default
+
+=null=
+
+*** Datetime
+
+A unix timestamp.
+
+**** Default
+
+=0=
+
+**** Examples
+
+- 1647249721
+- 1651398506.8589602
+
+**** Options
+
+***** =precision= (String)
+
+At which precision the user may choose the date/time.
+
+The possible values are:
+
+- ="years"=
+- ="months"=
+- ="days"=
+- ="hours"=
+- ="minutes"=
+- ="seconds"=
+- ="milliseconds"=
+- ="microseconds"=
+
+****** Default
+
+=seconds=
+
+*** File
+
+A json object with four keys, "filename", "content" and optionally
+"mime-type" and "content-id". The related values are the file name,
+base64 encoded content, mime type (RFC 2045) and a Content-ID to allow
+referencing (RFC 2045).
+
+**** Default
+
+=null=
+
+**** Examples
+
+#+begin_src js
+  {"filename": "foo.txt",
+   "mime-type": "plain/text",
+   "content": "Zm9vCg==",
+   "content-id": "foo-cid"}
+#+end_src
+
+#+begin_src js
+  {"filename": "bar.json",
+   "content": "eyJiIjogMX0K"}
+#+end_src
+
+*** Label
+
+The =name= associated with a =Label= type field is displayed to the
+user as a label. This is for informative purposes only and its value
+is always null.
+
+*Its value is always =null=*
+
+*** Password
+
+A json object with two keys: "state" and "content". If state is
+"plain", content has to be the password in plain text.  The backend
+may automatically convert the state to "encrypted" and encrypt the
+content in future password retrievals.
+
+**** Default
+
+=null=
+
+**** Examples
+
+#+begin_src js
+  {"state": "plain",
+   "content": "secure-key"}
+#+end_src
+
+#+begin_src js
+  {"state": "encrypted",
+   "content": "Y2lwaGVyCg=="}
+#+end_src
+
 
 ** Other Data Types
 
-|-------------+----------------------------------+---------------------------|
-| Name        | Description                      | Example Values            |
-|-------------+----------------------------------+---------------------------|
-| Binary      | Base64 encoded value of a binary | "QUJDCg=="                |
-|             | string                           |                           |
-|             |                                  |                           |
-|             | Default: =""=                    |                           |
-|-------------+----------------------------------+---------------------------|
-| Duration    | A time span given as an integer  | 120                       |
-|             | (number of seconds)              |                           |
-|             | Default: =0=                     |                           |
-|-------------+----------------------------------+---------------------------|
-| Hostname    | The IP/hostname of a single      | "example-host"            |
-|             | machine                          |                           |
-|             |                                  | "192.168.0.1"             |
-|             | Default: =null=                  |                           |
-|-------------+----------------------------------+---------------------------|
-| Port        | An integer between 0-65535       | 22                        |
-|             |                                  |                           |
-|             | Default: =0=                     |                           |
-|-------------+----------------------------------+---------------------------|
-| PortRange   | A comma seprated list of port    | 80,8000,8080,30000-31999  |
-|             | numbers (0-65535) or ranges      |                           |
-|             | specified with a dash            |                           |
-|             |                                  |                           |
-|             | Default: =0=                     |                           |
-|-------------+----------------------------------+---------------------------|
-| PrivateKey  | Like File but the content my     | {"filename": "key",       |
-|             | require security obligations.    | "state": "plain",         |
-|             | Like Password a "state" will     | "content": "..."}         |
-|             | determine if the "content" is    |                           |
-|             | encrypted or not.                |                           |
-|             |                                  |                           |
-|             | Default: =null=                  |                           |
-|-------------+----------------------------------+---------------------------|
-| RandomToken | A string that defaults to a      | "abcdefg0123456"          |
-|             | randomly generated value         |                           |
-|             |                                  |                           |
-|             | Default: random generated        |                           |
-|             |                                  |                           |
-|             | Options:                         |                           |
-|             | . =charset= (array of strings):  |                           |
-|             | .  Each item in the =charset=    |                           |
-|             | .  array determines which        |                           |
-|             | .  character sets should be used |                           |
-|             | .  in the token. Valid items     |                           |
-|             | .  are:                          |                           |
-|             | .    =ascii_letters=             |                           |
-|             | .    =ascii_lowercase=           |                           |
-|             | .    =ascii_uppercase=           |                           |
-|             | .    =digits=                    |                           |
-|             | .    =hexdigits=                 |                           |
-|             | .    =octdigits=                 |                           |
-|             | .    =printable=                 |                           |
-|             | .    =punctuation=               |                           |
-|             | .    =whitespace=                |                           |
-|             | .  The default value is          |                           |
-|             | .  =ascii_letters= and =digits=. |                           |
-|             | . =length= (Number):             |                           |
-|             | .   The length of the value.     |                           |
-|-------------+----------------------------------+---------------------------|
-| Subnet      | A comma seprated list of         | "192.168.0.1,192.168.0.2, |
-|             | IP/Subnet.                       | 10.0.0.0/8"               |
-|-------------+----------------------------------+---------------------------|
+|-------------+----------------------------+---------+------------------|
+| Name        | Description                | Default | Example Values   |
+|-------------+----------------------------+---------+------------------|
+| Binary      | base64 encoded binary      | ""      | "QUJDCg=="       |
+| Duration    | time span as an integer    | 0       | 120              |
+| Hostname    | IP/hostname                | null    | "example-host"   |
+| Port        | integer 0-65535            | 0       | 22               |
+| PortRange   | comma seprated dash ranges | 0       | 80,100-200       |
+| PrivateKey  | like file but secure       | null    | {"state": ...}   |
+| RandomToken | random generated string    | random  | "abcdefg0123456" |
+| Subnet      | comma seprated subnets     | null    | "1.0.0.0/8"      |
+|-------------+----------------------------+---------+------------------|
 
+*** Binary
+
+Base64 encoded value of a binary string.
+
+**** Default
+
+=""=
+
+**** Examples
+
+- ="QUJDCg=="=
+- ="YmluYXJ5"=
+
+*** Duration
+
+
+A time span given as an integer (number of seconds).
+
+**** Default
+
+=0=
+
+**** Examples
+
+- =30=
+- =120=
+
+*** Hostname
+
+The IP/hostname of a single machine.
+
+**** Default
+
+=null=
+
+**** Examples
+
+- ="example-host"=
+- ="192.168.0.1"=
+
+*** Port
+
+An integer between 0-65535.
+
+**** Default
+
+=0=
+
+**** Examples
+
+- 22
+- 8000
+
+*** PortRange
+
+A comma seprated list of port numbers (0-65535) or ranges specified
+with a dash.
+
+**** Default
+
+=0=
+
+**** Examples
+
+- 80,8000,8080,30000-31999
+- 1024-65535
+- 80
+
+*** PrivateKey
+
+Like File but the content my require security obligations.  Like
+Password a "state" will determine if the "content" is encrypted or
+not.
+
+**** Default
+
+=null=
+
+**** Examples
+
+#+begin_src js
+  {"filename": "key",
+   "state": "plain",
+   "content": "..."}
+#+end_src
+
+*** RandomToken
+
+A string that defaults to a randomly generated value
+
+**** Default
+
+random generated
+
+**** Examples
+
+- ="abcdefg0123456"=
+- ="e8e4d3a6e6fa4db12a466725a02f02ba"=
+
+
+**** Options
+
+***** =charset= (Array of strings)
+
+Each item in the =charset= array determines which character sets
+should be used in the token. Valid items are:
+
+- =ascii_letters=
+- =ascii_lowercase=
+- =ascii_uppercase=
+- =digits=
+- =hexdigits=
+- =octdigits=
+- =printable=
+- =punctuation=
+- =whitespace=
+
+The default value is =["ascii_letters", "digits"]=.
+
+***** =length= (Number)
+
+The length of the value.
+
+*** Subnet
+
+A comma seprated list of IP/Subnet.
+
+**** Default
+
+=null=
+
+**** Examples
+
+- ="192.168.0.0/16"=
+- ="192.168.0.1,192.168.0.2,10.0.0.0/8"=
+- ="8.8.8.8"=
