@@ -89,7 +89,7 @@ below.
 * =version=
 
 The =version= key defines the current PitayaForm version. It is
-currently the integer =1=. It is a REQUIRED key and MUST be present in
+currently the STRING "1". It is a REQUIRED key and MUST be present in
 a PitayaForm description.
 
 On examples in this document the =version= key is removed from the
@@ -143,14 +143,35 @@ OPTIONAL. A human readable short name that the frontend SHOULD show the
 user for the field. IF not present, the frontend SHOULD use the unique
 key reference of the field.
 
+The =name= could also be NULL LITERAL in which case the field label
+MUST be omitted in the user interface.
+
+It is RECOMMENDED that the frontend show at least 30 characters of the
+=name=. Extra characters MAY replaced by an ellipsis.
+
 ** =description=
 
 OPTIONAL. A human readable text describing the field or add more
 details about how the user may enter the required input.
 
 FRONTEND OPTIONAL. A frontend MAY implement this feature and provide
-this information for the field as a tool-tip or any other way, or if
-not support it, the frontend may ignore it.
+this information for the field as a small text under the field, a
+tool-tip or any other way, or if not support it, the frontend may
+ignore it.
+
+It is RECOMMENDED that the frontend show at least 120 characters of
+the =description=. Extra characters MAY replaced by an ellipsis.
+
+** =long_description=
+
+OPTIONAL. FRONTEND OPTIONAL. Just like =description= but without a
+RECOMMENDED length. It is RECOMMENDED that frontends support both
+description and long description together but show them in different
+ways.
+
+It is also RECOMMENDED that the frontend provide a way for the user to
+view the whole =long_description= text. This might be happen by using
+a scroll-bar.
 
 ** =type=
 
@@ -302,6 +323,16 @@ simple implementation:
         regex: ".*/v1/.*"
 #+end_src
 
+** =events=
+
+OPTIONAL. An OBJECT. The keys are the name of the event and the value
+for each event is an ARRAY of references to actions defined in the
+=actions= section that a frontend MAY execute them in the mentioned
+order if it support the event.
+
+FRONTEND OPTIONAL. A frontend may support any events but they are not
+specified in this document.
+
 * =styles=
 
 An OPTIONAL =styles= may be provided for each PitayaForm in which keys
@@ -319,7 +350,29 @@ single line one, although in both cases the user may be able to
 provide a text with new line character.
 
 =styles= may also be used to change the arrangement of items in a
-group, for example to add rows or columns.
+group, for example to arrange widgets in columns.
+
+Another FRONTEND OPTIONAL feature is that the forntend MAY support
+changing the style of single item in an array by using [[https://goessner.net/articles/JsonPath/][jsonpath]] like
+references:
+
+#+name: jsonpath references example in styles
+#+begin_src yaml
+  form:
+    url:
+      name: URL
+      type: String
+      array: true
+  styles:
+    url:
+      placeholder: http://foo
+    url[2]:
+      placeholder: http://bar
+#+end_src
+
+In the above example, all URLs in the array will have the "http://foo"
+as the =placeholder=, except the third item of the array which will
+have "http://bar" as the =placeholder=.
 
 * =groups=
 
@@ -358,7 +411,7 @@ The =groups= key defines an OBJECT in which each key is a reference to
 a =gid= or a non-existent logical group. Non-existent logical group
 keys MUST also abide the =gid= naming conventions.
 
-The =groups= can be used the change the place where the data will be
+The =groups= can be used to change the place where the data will be
 stored in the target data model. In the above example the target data
 model could be as follows:
 
@@ -495,7 +548,7 @@ Here is an example:
         Any valid HTTP header can be provided. Note that the
         keys has to be Latin-1 encoded.
       array: true
-      result_group: headers
+      target_group: headers
       order: 1  # (C) in NOTE*
   styles:  # styles can be adde to both field and group references
     value:
@@ -538,16 +591,6 @@ be used to add default items for the array:
         - key: foo2
           value: bar2
 #+end_src
-
-** =events=
-
-OPTIONAL. An OBJECT. The keys are the name of the event and the value
-for each event is an ARRAY of references to actions defined in the
-=actions= section that a frontend MAY execute them in the mentioned
-order if it support the event.
-
-FRONTEND OPTIONAL. A frontend may support any events but they are not
-specified in this document.
 
 ** =gid=
 
@@ -633,7 +676,7 @@ group MAY have events if the frontend support them.
       description: |
         You can provide a template for the short messages with
         your desired style.
-      result_group: null
+      target_group: null
       order: 1
     ssl_options: {} # A group with no options will cause the
                     # form values of this group to be stored
@@ -643,15 +686,15 @@ group MAY have events if the frontend support them.
                     # option:
                     #
                     # ssl_options:
-                    #   result_group: ssl_options
+                    #   target_group: ssl_options
                     #
                     # This is different than gid "url" which is not
                     # defined here and is equivalent to:
                     #
                     # url:
-                    #   result_group: null
+                    #   target_group: null
     api_key:
-      result_group: api
+      target_group: api
       order: 4
     default_options:
       name: Default Options
@@ -722,7 +765,7 @@ group MAY have events if the frontend support them.
       gid: request
     proxy_auth:
       name: Proxy Authentication
-      result_group: auth
+      target_group: auth
       array: true
       gid: proxy
 #+end_src
@@ -843,7 +886,7 @@ PitayaForm:
            groups:
              advanced:
                name: Advanced Options
-               result_group: null
+               target_group: null
                order: 2
 #+end_src
 
@@ -892,6 +935,12 @@ methods that could be defined in another specification.
 *** =name=
 
 REQUIRED. The name of the remote precedence to be called.
+
+*** =options=
+
+OPTIONAL. An OBJECT which can provide the details a specific RPC type
+may require. For example =method= and =content_type= for an
+=http_rest= RPC.
 
 *** =async=
 
@@ -1018,6 +1067,95 @@ that ARRAY and extracting the actions MUST be ignored silently.
       name: another_rpc
 #+end_src
 
+** =modal=
+
+The =modal= action will provide a mechanism to pop up a modal
+form. The modal is an independent form from the main PitayaForm,
+although it is also defined according to PitayaForm specification.
+
+The frontend MUST add a close button (for example with an =X= icon on
+the title bar) to each modal automatically. Other action buttons can
+be added to the form manually.
+
+The =modal= can be used statically in a PitayaForm definition, but
+because =rpc= calls can return dynamic actions, using =modal= as a
+result of an =rpc= action is a powerful way to have arbitrary dynamic
+modal forms to gather input from user in an external form.
+
+The =modal= is an OBJECT with the keys defined below.
+
+*** =title=
+
+OPTIONAL. An optional title for the modal form.
+
+*** =form=
+
+REQUIRED. An OBJECT defining a modal form according to full PitayaForm
+specification, with its own =form=, =groups=, =styles=, =actions=,
+etc.
+
+Note that references in the modal =form= object are relational to its
+root, so it is not possible for a modal form to reference its parent.
+
+#+name: simple modal form example
+#+begin_src yaml
+  form:
+    show_message_button:
+      name: Popup
+      type: Button
+      events:
+        - click: popup
+  actions:
+    popup:
+      - modal:
+          title: "The modal example"
+          form:
+            # An independent PitayaForm can be defined here:
+            version: "1"
+            form:
+              note:
+                name: Some text on the modal.
+                type: Label
+#+end_src
+
+** =submit=
+
+The =submit= action can be used to create customized submit
+buttons. The =submit= value MUST be according to References and
+Templates specification in this document. On execution of this action,
+the frontend MUST close the current from and submit the provided value
+to the backend.
+
+#+name: submit part of the input with a custom action
+#+begin_src yaml
+  - submit:
+      mode: document_reference
+      type: jsonpath
+      reference: input.textbox  # submit only part of the input, unlike
+                                # the default form submission which the
+                                # whole input will be submitted.
+#+end_src
+
+More importantly, the =submit= action can be used in the result of an
+RPC in a modal form. In this case the =submit= value MUST be
+interpreted as actions for the parent form.
+
+#+name: submit in a modal form
+#+begin_src yaml
+  - update:  # this action will be executed in the modal form itself
+      styles:
+        foo:
+          hidden: false
+  - submit:
+      mode: value
+      type: simple
+      value:
+        - update:  # this action will be executed on the parent form
+            styles:
+              bar:
+                hidden: false
+#+end_src
+
 ** Actions examples
 
 *** Advanced options
@@ -1052,7 +1190,7 @@ that ARRAY and extracting the actions MUST be ignored silently.
            groups:
              advanced:
                name: Advanced Options
-               result_group: null
+               target_group: null
                order: 2
        # The actions above will be peformed in the specified order. This
        # was only to illustrate an example. In practice, first "remove"
@@ -1262,6 +1400,199 @@ that ARRAY and extracting the actions MUST be ignored silently.
 
 [[./images/actions-rpc-choices.png]]
 
+*** EULA modal
+
+#+name: EULA modal example
+#+begin_src yaml
+  form:
+    agreed:
+      name: I agree with the terms and conditions
+      type: Boolean
+      events:
+        - click: show_eula
+  styles:
+    agreed:
+      read_only: true
+  actions:
+    - rpc:
+      type: js
+      name: show_eula
+  js: |
+    function show_eula() {
+      return [{
+        "modal": {
+           "title": "Do you agree with the EULA?"
+           "form": {
+             "version": "1",
+             "form": {
+               "eula": {"name": "Terms ... and Conditons ...",
+                        "type": "Label"},
+               "i_agree": {"name": "Yes, I agree",
+                           "type": "Button",
+                           "events": [{"click": "yes"}]}},
+             "actions": {
+               "yes": [
+                 {"submit":
+                   "value": [{"update": {"input": {"agreed": true}}}]
+                 }]}}}}];
+    }
+#+end_src
+
+[[./images/actions-rpc-modal-eula.png]]
+
+*** Customized modals with RPC
+
+This is a more sophisticated form of using RPC to generate custom
+modal forms for customized user input, although for brevity the RPC
+implementation is not included. Instead an example of what the RPC
+method may return is presented.
+
+This example, also illustrates the use of =current_reference=
+reference mode. Each "edit" button in the array should pop up a modal
+for the selected item in the array, so some way to reference the
+current selected item is required.
+
+#+name: customized modals with RPC example
+#+begin_src yaml
+  form:
+    add_activity:
+      name: null
+      type: Choices
+      options:
+        choices:
+          empty: {"name": ""}
+          notification: {"name": "Add new notification"}
+          log: {"name": "Add new log"}
+      events:
+        - click: new_activity
+    activity_name:
+      type: Label
+      gid: activities
+    activity_edit:
+      name: null
+      type: Button
+      gid: activities
+      events:
+        - click: edit_activity
+
+  groups:
+    activities:
+      array: true
+
+  styles:
+    activity_edit:
+      icon: edit
+    activities:
+      insertable: false
+      removable: true
+
+  actions:
+    new_activity:
+      - rpc:
+          type: http_rest
+          name: activity
+          arguments:
+            activity_type:
+              mode: document_reference
+              type: jsonpath
+              reference: input.add_activity
+            activities:
+              mode: document_reference
+              type: jsonpath
+              reference: input.activities  # array
+            item_reference:
+              mode: value
+              value: null
+    edit_activity:
+      - rpc:
+          type: user_input
+          name: activity
+          arguments:
+            activity_type:
+              mode: value
+              value: null  # this is an edit and whatever activity type
+                           # the item has, it should be preserved (the
+                           # activity type cannot be edited)
+            activities:
+              mode: document_reference
+              type: jsonpath
+              reference: input.activities  # array
+            item_reference:
+              mode: current_reference
+
+#+end_src
+
+[[./images/actions-rpc-modal-activities.png]]
+
+The above =activity= RPC should accept three arguments:
+-  =activity_type= :: Can be "notification" or "log" which will
+  determine what kind of "modal" form should be generated. The NULL
+  LITERAL is also acceptable to open an edit modal form for an already
+  created activity in the array.
+- =activities=: An array of all the existing activities in the parent
+  form.
+- =item_reference=: The NULL LITERAL for new activities or a STRING
+  reference e.g. =activities[3].activity_edit= for edits, which can be
+  used to determine which activity in the array should be edited.
+
+Then the RPC should return a =modal= action to pop-up the related from
+according to its arguments. For example, if the user selects the
+=notification= item in the =add_activity= choices to add a new
+notification activity, the RPC may return this to pop-up a modal to
+ask for more details from the user:
+
+#+name: example modal action returned by the RPC
+#+begin_src yaml
+  - modal:
+      title: "Enter the notification details"
+
+      form:
+        notification_type:
+          name: via
+          type: Choices
+          options:
+            email: {"name": "Email"}
+            sms: {"name": "SMS"}
+        receptor:
+          name: Receptor
+          type: String
+        add_notification_button:
+          name: Add Notification
+          type: Button
+          gid: buttons
+          events:
+            - add_notification
+        cancel_button:
+          name: Cancel
+          type: Button
+          gid: buttons
+          events:
+            - cancel
+
+      actions:
+        add_notification:
+          - rpc:
+              type: http_rest
+              name: add_notification_to_parent_form
+              arguments:
+                input:
+                  mode: document_reference
+                  type: jsonpath
+                  reference: input # the whole modal form input
+        cancel:
+          - submit:
+              # submiting no actions to the parent will close the modal
+              # without any changes in the parent form.
+              value: []
+#+end_src
+
+Note that the modal form action in the above example has its own
+actions. The =add_notification= action in the modal form will call
+another RPC =add_notification_to_parent_form= which should accept the
+input from the modal form and should generate a =submit= action itself
+to update the parent form's =input= with a new item in its
+=activities= array.
+
 * =input=
 
 The =input= section in a PitayaForm represents the frontend generated
@@ -1270,8 +1601,8 @@ user. As user change the inputs the values in the =input= MUST be
 updated. The =input= is useful to be referenced from other sections of
 the form.
 
-On the form initialization, the FRONEND MUST create an input object by
-using the default values in the =form= and =groups=. Then if there
+On the form initialization, the frontend MUST create an input object
+by using the default values in the =form= and =groups=. Then if there
 exists an =input= section in a PitayaForm it MUST be merged into the
 created input object overriding the default values. The merge MUST be
 done just like the =update= action with =extend_arrays= set to
@@ -1365,6 +1696,8 @@ values generated from the defaults, on initialization:
 
 * References
 
+** Document Reference
+
 For a variety of reasons it may be necessary to refer to a point in
 the PitayaForm. In some cases the reference is always from a specific
 point. For example, a key inside =groups= is a reference to a =gid= in
@@ -1399,6 +1732,80 @@ For example a frontend MAY support [[https://goessner.net/articles/JsonPath/][js
   mode: document_reference
   type: jsonpath
   reference: input.headers[0].value
+#+end_src
+
+** Current Reference
+
+If an =rpc= action is triggered by an event from an item in an array
+there should be someway for the RPC implementation to determine which
+item of the array has triggered the action.
+
+The =mode= equal to =current_reference= should generate a reference to
+the triggered action. If no triggered action is available in the
+context, NULL LITERAL MUST be generated.
+
+The =type= will determine what syntax should be used for the
+reference. For example, =jsonpath= might with dot notation and
+brackets for array indexes might be used.
+
+#+name: RPC calls triggered by the items in the array example
+#+begin_src yaml
+  form:
+    books:
+      name: Book Name
+      type: String
+      array: true
+      events:
+        - change: process_book
+    author_id:
+      name: Author ID
+      type: Number
+      gid: authors
+    author_name:
+      name: Author Name
+      type: String
+      gid: authors
+    author_submit:
+      name: Submit Author
+      type: button
+      gid: authors
+      events:
+        - click: process_author
+  groups:
+    authors:
+      array: true
+  actions:
+    process_book:
+      - rpc:
+        type: http_rest
+        name: process_book
+        arguments:
+          all_books:
+            mode: document_reference
+            type: jsonpath
+            reference: input.books  # array of all book names
+          book_ref:
+            mode: current_reference  # For example, if the 4th item in
+                                     # the array has triggerd this
+                                     # action, "books[3]" will be set as
+                                     # the value for "book_ref"
+                                     # argument
+    process_author:
+      - rpc:
+        type: http_rest
+        name: process_book
+        arguments:
+          all_authors:
+            mode: document_reference
+            type: jsonpath
+            reference: input.authors  # array of all the authors
+          author_ref:
+            mode: current_reference  # For example, if the 7th item in
+                                     # the array has triggerd this
+                                     # action,
+                                     # "authors.author_submit[6]" will
+                                     # be set as the value for
+                                     # "author_ref" argument
 #+end_src
 
 * Templates

@@ -1,11 +1,314 @@
 * Pitaya Form Styles
 
-|-----------+----------------+---------------------------------------------|
-| Name      | Type (default) | Description                                 |
-|-----------+----------------+---------------------------------------------|
-| hidden    | Boolean        | Determine if the widget must be visible     |
-|           | (=false=)      | or not.                                     |
-|-----------+----------------+---------------------------------------------|
-| multiline | Boolean        | Determine if the widget can be expanded to. |
-|           | (=false=)      | multiple lines or not.                      |
-|-----------+----------------+---------------------------------------------|
+Each field or group of a PitayaForm may have styles which specifies
+the widget appearances. This document is a draft of what styles a
+frontend may support.
+
+Each type may support different styles, so we can classify styles by
+the types. But to emphasize the use of similar names and semantics the
+styles are defined independent of the types, here. Instead, details on
+support by each type are explained if necessary.
+
+* Rules
+
+1. Styles, should only change the widgets appearance and how the user
+   interact with them. They MUST NOT affect the values that can be
+   provided.
+
+2. If a style is not supported by a =type= it must be ignored.
+
+3. Style names must follow the form keys syntax. They must be at least
+   one character and only contains ASCII alphabet, numbers or
+   underscore characters. In other words they should match the =\w+=
+   Perl regular expression.
+
+4. Each widget usually has a label prefix. The styles usually affect
+   the widget itself not its label. The "Label" type is an exception
+   in which the label is the main widget. Other exceptions in which
+   the style should alter the label, are specified in this document.
+
+* Field Styles
+
+** =auto_size=
+
+Determine if the widget must be automatically resized or not.
+
+*** Properties
+- Value Type :: Boolean
+- Default :: =true=
+- Supported Types :: String-based types
+
+** =button_style=
+
+Specifies the style of the button/buttons.
+
+There are two type of buttons. Boolean and Choices based types that
+store states. There are also buttons that are simply clickable and are
+used to activate an action. For both the =button_style= might be used,
+although a specific type may only support a subset of the enumeration.
+
+*** Properties
+- Value Type :: Enumeration
+  - =radio= :: Radio button (🔘)
+  - =check= :: Check box (☑)
+  - =button= :: A button with a label on it (❏)
+  -  =link= :: A hyperlink (_link_)
+- Default :: frontend specific
+- Supported Types :: Boolean, Choices and Button based types
+
+** =choices_style=
+
+Specifies the style of the choices.
+
+*** Properties
+- Value Type :: Enumeration
+  - =dropdown= :: A drop-down list aka combo-box or select (⎕⎕⎕⎕⍌)
+  - =button= ::  A sequence of select-able buttons (❏ ❏ ❏) with the
+    specified =button_style=.
+- Default :: frontend specific
+- Supported Types :: Choices based types
+
+** =colspan=
+
+Specifies the number of columns the widget should span.
+
+*** Properties
+- Value Type :: Number
+- Default :: 1
+- Supported Types :: All types
+
+** =disabled=
+
+Determine if the widget must be disabled or not. It is RECOMMENDED that
+the widget appearance change to hint the user that the widget is
+disabled or not.
+
+*** Properties
+- Value Type :: Boolean
+- Default :: =false=
+- Supported Types :: All types
+
+** =hidden=
+
+Determine if the widget must be visible or not.
+
+*** Properties
+- Value Type :: Boolean
+- Default :: =false=
+- Supported Types :: All types
+
+** =icon=
+
+Specifies an icon for the widget. The icon may be used as the filed
+name or anywhere else.
+
+Different icons can be accessible by a unique name which can
+arbitrarily interpreted by the frontend.
+
+*** Properties
+- Value Type :: String
+- Default :: frontend specific
+- Supported Types :: Various types
+
+** =max_rows=
+
+The maximum number of rows for a widget with =auto_size=.
+
+*** Properties
+- Value Type :: Number
+- Default :: frontend specific
+- Supported Types :: All types with =auto_size= support
+
+** =min_rows=
+
+The minumum number of rows for a widget with =auto_size=.
+
+*** Properties
+- Value Type :: Number
+- Default :: 1
+- Supported Types :: All types with =auto_size= support
+
+** =multiline=
+
+Determine if the widget can be expanded to multiple lines or not.
+
+*** Properties
+- Value Type :: Boolean
+- Default :: =false=
+- Supported Types :: String-based types
+
+** =read_only=
+Determine if the widget is read-only or not. In contrast with
+=disabled= the widget appearance will not change.
+
+*** Properties
+- Value Type :: Boolean
+- Default :: =false=
+- Supported Types :: All types
+
+** =placeholder=
+
+A text that if provided, could be shown as a faint text on top of the
+widget as the input that will be removed as the user enter some input.
+
+*** Properties
+- Value Type :: String
+- Default :: Empty String
+- Supported Types :: String-based types
+
+** =rows=
+
+The number of rows for a fixed-sized widget.
+
+For a "Label" or an input text-box that may have texts that overflow
+the specified size, the frontend may show a vertical scroll-bar.
+
+*** Properties
+- Value Type :: Number
+- Default :: frontend specific
+- Supported Types :: Various types
+
+* Array Styles
+** =insertable=
+
+Determine if items can be added to the array by the user or not.
+
+*** Properties
+- Value Type :: Boolean
+- Default :: =true=
+- Supported Types :: All array types
+
+** =array_style=
+
+Specifies the style of the array.
+
+*** Properties
+- Value Type :: Enumeration
+  - =tabs= :: Only one item of the array is visible at a time, but
+    each item (tab) has a header that could be selected by the user to
+    switch between tabs. This is more applicable in array groups,
+    which each group has a header and contains several widgets inside
+    it.
+  - =sequence= :: All array items are always visible (or accessible by
+    a scroll-bar).
+- Default :: frontend specific
+- Supported Types :: All array types
+
+** =removable=
+
+Determine if the array items can be removed by the user or not.
+
+*** Properties
+- Value Type :: Boolean
+- Default :: =true=
+- Supported Types :: All array types
+
+** =sortable=
+
+Determine if the array items can be sorted by the user or not.
+
+*** Properties
+- Value Type :: Boolean
+- Default :: =true=
+- Supported Types :: All array types
+
+* Group Styles
+** =collapsed=
+
+Determine if the group is currently collapsed or not.
+
+*** Properties
+- Value Type :: Boolean
+- Default :: =false=
+
+** =collapsible=
+
+Determine if the group is collapsible/expandable or not.
+
+*** Properties
+- Value Type :: Boolean
+- Default :: frontend specific
+
+** =columns=
+
+Specifies the number of columns in the group with =table= style.
+
+*** Properties
+- Value Type :: Number
+- Default :: frontend specific
+
+** =display=
+
+Specify how the items inside the group has to be arranged.
+
+*** Properties
+- Value Type :: Enumeration
+  - =table= :: Group items will be arranged similar to a table.
+  - =inline= :: Group items will be arranged in a sequence in a
+    wrap-able row.
+
+    In combination with Label types and fields which their =Name= is
+    set to =null=, a customized wrap-able text with inline widgets can
+    be created.
+  - =compact= :: Like =inline= but with no spacing between items and
+    no wrapping. Useful for creating custom multi-component widgets.
+- Default :: table
+
+#+name: inline exmaple for a group
+#+begin_src yaml
+form:
+  text1:
+    type: Label
+    name: The number must be between
+  min:
+     type: Number
+     name: null
+  text2:
+    type: Label
+    name: and
+  max:
+     type: Number
+     name: null
+  text3:
+    type: Label
+    name: for this form.
+style:
+  # all items are in the _root group
+  _root:
+    display: inline
+#+end_src
+
+[[./images/styles-inline.png]]
+
+#+name: compact exmaple for a group
+#+begin_src yaml
+form:
+  schema:
+    type: Choices
+    name: URL
+    options:
+      choices:
+        http: {"name": "http://"}
+        https: {"name": "https://"}
+  domain:
+     type: String
+     name: null
+  tld:
+    type: Label
+    name: .com
+style:
+  # all items are in the _root group
+  _root:
+    display: compact
+#+end_src
+
+[[./images/styles-compact.png]]
+
+** =transparent=
+
+Determine if the group is transport or not. A transparent group has no
+border and no header.
+
+*** Properties
+- Value Type :: Boolean
+- Default :: =false=
